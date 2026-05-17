@@ -24,7 +24,7 @@ app.use(
 );
 app.use(express.json({ limit: "1mb" }));
 
-app.get("/", (_req, res) => {
+app.get("/api/health", (_req, res) => {
   res.json({ message: "Candidate Shortlisting API is running." });
 });
 
@@ -36,6 +36,10 @@ if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
   app.get("*", (_req, res) => {
     res.sendFile(path.join(frontendDistPath, "index.html"));
+  });
+} else {
+  app.get("/", (_req, res) => {
+    res.json({ message: "Candidate Shortlisting API is running." });
   });
 }
 
