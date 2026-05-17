@@ -45,26 +45,39 @@ Backend runs on `http://localhost:5000`; frontend runs on `http://localhost:5173
 
 ## Deployment
 
-Backend options: Render, Railway, Cyclic, Fly.io, or an Express-compatible Node host.
+## Deploy On Render
+
+This repo includes a `render.yaml` Blueprint for Render. Push the project to GitHub, then in Render choose **New > Blueprint** and select this repository.
+
+Render will create two services:
+
+- `candidate-shortlisting-api`: Node/Express backend from `backend`
+- `candidate-shortlisting-frontend`: Vite static site from `frontend`
+
+When Render asks for secret values, add these backend variables:
 
 Set these environment variables on the backend host:
 
 - `MONGODB_URI`
 - `OPENROUTER_API_KEY`
-- `OPENROUTER_MODEL`, optional
-- `FRONTEND_URL`
-- `PORT`, usually provided by the host
+- `FRONTEND_URL`: set this after the static site is created, for example `https://candidate-shortlisting-frontend.onrender.com`
 
-Frontend options: Vercel, Netlify, or Render Static Site.
+The backend uses:
 
-Set this frontend environment variable:
+- Build command: `npm install`
+- Start command: `npm start`
+- Root directory: `backend`
 
-- `VITE_API_URL=https://your-backend-url.com`
+For the frontend static site, set:
 
-Then build with:
+- `VITE_API_URL`: your Render backend URL, for example `https://candidate-shortlisting-api.onrender.com`
 
-```bash
-npm.cmd run build --prefix frontend
-```
+The frontend uses:
 
-Deploy the generated `frontend/dist` folder.
+- Build command: `npm install && npm run build`
+- Publish directory: `dist`
+- Root directory: `frontend`
+
+After both services exist, update the backend `FRONTEND_URL` to the frontend URL and redeploy the backend. Update the frontend `VITE_API_URL` to the backend URL and redeploy the frontend.
+
+Do not upload `backend/.env` to GitHub or Render. Add secrets in the Render dashboard only.

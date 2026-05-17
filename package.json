@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "install:all": "npm.cmd install --prefix backend && npm.cmd install --prefix frontend",
+    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "npm start --prefix backend",
     "dev:backend": "npm.cmd run dev --prefix backend",
     "dev:frontend": "npm.cmd run dev --prefix frontend"
   }

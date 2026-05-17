@@ -1,6 +1,9 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import mongoose from "mongoose";
 import aiRoutes from "./routes/ai.js";
 import candidateRoutes from "./routes/candidates.js";
@@ -10,6 +13,9 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const frontendDistPath = path.resolve(__dirname, "../../frontend/dist");
 
 app.use(
   cors({
@@ -25,6 +31,13 @@ app.get("/", (_req, res) => {
 app.use("/api/candidates", candidateRoutes);
 app.use("/api/match", matchRoutes);
 app.use("/api/ai", aiRoutes);
+
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(frontendDistPath, "index.html"));
+  });
+}
 
 app.use((err, _req, res, _next) => {
   console.error(err);
